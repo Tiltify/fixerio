@@ -29,4 +29,4 @@ config :fixerio,
 
 ## Usage
 
-Please refer the documentation for the API usage.
+Please refer the [documentation](https://hexdocs.pm/fixerio) for the API usage.
