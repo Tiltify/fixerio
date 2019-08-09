@@ -21,9 +21,9 @@ defmodule Fixerio.API do
   def build_params(method, options) do
     params = "?"
     params = if options[:api_key] == nil do
-      params <> "/" <> "access_key=" <> Config.default_api[:api_key]
+      params <> "access_key=" <> Config.default_api[:api_key]
     else
-      params <> "/" <> "access_key=" <> options[:api_key]
+      params <> "access_key=" <> options[:api_key]
     end
     params = case method do
       "convert" ->
@@ -31,7 +31,13 @@ defmodule Fixerio.API do
       # by default we consider any other value to be date or "latest"
       # both have same params requirement
       _ ->
-        params <> "&base=" <> options[:base] <> "&symbols=" <> options[:symbols]
+        params = params <> "&base=" <> Atom.to_string(options[:base])
+        if options[:symbols] != nil && length(options[:symbols]) > 0 do
+          params = params <> "&symbols="
+          params <> Enum.reduce(options[:symbols], "", fn sym, acc -> Enum.join([Atom.to_string(sym), acc], ",") end) |> String.trim(",")
+        else
+          params
+        end
     end
     params
   end
@@ -48,14 +54,26 @@ defmodule Fixerio.API do
   end
 
   def handle_result(body) do
-    data = Jason.decode(body)
-    if data["error"] || !data["rates"] do
-      error = data["error"]["info"]
-      error = if error, do: error, else: ""
-      reason = "Error. " <> error
-      {:error, reason}
-    else
-      {:ok, %{base: data["base"], rates: data["rates"]}}
+    case Jason.decode(body) do
+      {:ok, data} ->
+        if data["error"] || !data["rates"] do
+          error = data["error"]["type"]
+          error = if error, do: error, else: ""
+          reason = "Error. " <> error
+          {:error, reason}
+        else
+          response = %{base: data["base"], rates: data["rates"]}
+          response = if data["date"] != nil do
+            Map.put(response, :date, data["date"])
+          else
+            response
+          end
+          {:ok, response}
+        end
+      {:error, %Jason.DecodeError{} = error} ->
+        {:error, error[:data]}
+      _ ->
+        {:error, "Failed to get data"}
     end
   end
 end
