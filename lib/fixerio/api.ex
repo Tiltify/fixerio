@@ -1,4 +1,6 @@
 defmodule Fixerio.API do
+  @moduledoc false
+
   alias Fixerio.Config
 
   def request(method, options \\ []) do

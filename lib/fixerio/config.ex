@@ -1,4 +1,5 @@
 defmodule Fixerio.Config do
+  @moduledoc false
 
   def default_api do
     Application.get_env(:fixerio, :default_api)

@@ -9,7 +9,14 @@ defmodule Fixerio.MixProject do
       package: package(),
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      name: "Fixerio",
+      source_url: "https://github.com/sajan45/fixerio",
+      homepage_url: "https://github.com/sajan45/fixerio",
+      docs: [
+        main: "Fixerio", # The main page in the docs
+        extras: ["README.md"]
+      ]
     ]
   end
 
