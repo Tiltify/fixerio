@@ -16,40 +16,22 @@ defmodule Fixerio do
     `%{ base: "USD", date: "2019-08-09", rates: %{ "AUD" => 1.46, "CZK" => 23.064, "IDR" => 14189.998, ... }}` in case of success
     `{:error, %{errors: []}` in case of failure
   ## Examples
-    iex> Fixerio.get_latest %{base: :USD}
-    {:ok,
-    %{
-      base: "USD",
-      date: "2019-08-09",
-      rates: %{
-        "AUD" => 1.469190927,
-        "CZK" => 23.0648330059,
-        "IDR" => 14189.9982139668,
-        .
-        .
-        .
-      }
-    }}
 
-    iex> Fixerio.get_latest %{base: :USD}
-    {:error,
-    %{
-      errors: [
-        %{reason: "not found", url: "https://my-api.herokuapp.com"},
-        %{
-          reason: "Error. base_currency_access_restricted",
-          url: "http://data.fixer.io"
-        }
-      ]
-    }}
+      Fixerio.get_latest(%{base: :USD})
+      # {:ok,
+      #   %{
+      #     base: "USD",
+      #     date: "2019-08-09",
+      #     rates: %{"AUD" => 1.469190927, "CZK" => 23.0648330059, ...}
+      #   }}
 
-    iex> Fixerio.get_latest(%{symbols: [:AUD, :BRL, :CNY]})
-    {:ok,
-    %{
-      base: "USD",
-      date: "2019-08-09",
-      rates: %{"AUD" => 1.469190927, "BRL" => 3.9287372745, "CNY" => 7.0583139846}
-    }}
+      Fixerio.get_latest(%{symbols: [:AUD, :BRL, :CNY]})
+      # {:ok,
+      #   %{
+      #     base: "USD",
+      #     date: "2019-08-09",
+      #     rates: %{"AUD" => 1.469190927, "BRL" => 3.9287372745, "CNY" => 7.0583139846}
+      #   }}
   """
   def get_latest(options \\ %{base: :EUR}) do
     base = if options[:base], do: options[:base], else: :USD
@@ -83,14 +65,15 @@ defmodule Fixerio do
 
     `{:error, "Failed. No API available."}` in case of failure
   ## Examples
-    iex> Fixerio.convert(90000, :USD, :EUR)
-    {:ok,
-    %{
-      date: "2019-08-09",
-      info: %{rate: 0.8930166101, timestamp: 1565380266},
-      query: %{amount: 90000, from: :USD, to: :EUR},
-      result: 80371.494909
-    }}
+
+      Fixerio.convert(90000, :USD, :EUR)
+      # {:ok,
+      #   %{
+      #     date: "2019-08-09",
+      #     info: %{rate: 0.8930166101, timestamp: 1565380266},
+      #     query: %{amount: 90000, from: :USD, to: :EUR},
+      #     result: 80371.494909
+      #   }}
   """
   def convert(amount, from, to, date \\ nil) do
     method = if date, do: Date.to_string(date), else: "latest"
@@ -128,20 +111,14 @@ defmodule Fixerio do
     `%{ base: "USD", date: "2019-08-09", rates: %{ "AUD" => 1.46, "CZK" => 23.064, "IDR" => 14189.998, ... }}` in case of success
     `{:error, %{errors: []}` in case of failure
   ## Examples
-    iex> Fixerio.historical_data(Date.utc_today)
-    {:ok,
-    %{
-      base: "EUR",
-      date: "2019-08-09",
-      rates: %{
-        "AUD" => 1.6452,
-        "BGN" => 1.9558,
-        "BRL" => 4.3994,
-        .
-        .
-        .
-      }
-    }}
+
+      Fixerio.historical_data(Date.utc_today())
+      # {:ok,
+      #   %{
+      #     base: "EUR",
+      #     date: "2019-08-09",
+      #     rates: %{"AUD" => 1.6452, "BGN" => 1.9558, "BRL" => 4.3994, ...}
+      #   }}
   """
   def historical_data(date, options \\ %{base: :EUR}) do
     base = if options[:base], do: options[:base], else: :USD
